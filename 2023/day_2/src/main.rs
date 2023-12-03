@@ -1,12 +1,9 @@
 use std::fs;
-// TODO: set default values
 struct SetCount {
     red: i32,
     green: i32,
     blue: i32
 }
-// TODO: implement build from string 
-// TODO: creat game struct
 fn main() {
     let max_red = 12;
     let max_green = 13;
@@ -50,8 +47,28 @@ fn get_game_power(game: String) -> i32 {
 }
 
 fn get_set_count(set: &str) -> SetCount {
+    let mut set_count = SetCount { red: 0, green: 0, blue: 0 };
 
-    SetCount { red: 0, green: 0, blue: 0 }
+    for color_count in set.split(", ") {
+        let count_color_split = 
+            color_count.split(" ")
+            .collect::<Vec<&str>>();
+        let count = 
+            count_color_split[0]
+            .to_string()
+            .parse::<i32>()
+            .unwrap();
+        let color = count_color_split[1];
+        match color {
+            "red" => set_count.red = count,
+            "green" => set_count.green = count,
+            "blue" => set_count.blue = count,
+            _ => break
+        }
+    }
+
+    set_count
+
 }
 
 fn get_game_value(game: String, max_red: i32, max_green: i32, max_blue: i32) -> i32 {
