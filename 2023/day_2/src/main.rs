@@ -5,6 +5,7 @@ struct SetCount {
     blue: i32
 }
 fn main() {
+    // Part 1
     let max_red = 12;
     let max_green = 13;
     let max_blue = 14;
@@ -22,6 +23,7 @@ fn main() {
         .sum();
     println!("{}", sum_of_ids);
 
+    // Parte 2
     let sum_of_game_powers: i32 = 
         games
         .map(get_game_power)
