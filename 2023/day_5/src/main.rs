@@ -1,26 +1,25 @@
 use std::fs;
 use std::collections::HashMap;
 
-#[derive(Clone)]
 struct RangedMaps {
     name: String,
-    source_range_start: Vec<i32>,
-    source_destination_range_map: HashMap<i32, (i32, i32)>
+    source_range_start: Vec<u32>,
+    source_destination_range_map: HashMap<u32, (u32, u32)>
 }
 impl RangedMaps {
-    fn register_range_map(&mut self, dest: i32, src: i32, range: i32) {
+    fn register_range_map(&mut self, dest: u32, src: u32, range: u32) {
         self.source_range_start.push(src);
         self.source_range_start.sort();
         
         self.source_destination_range_map.insert(src, (dest, range));
     }
 
-    fn get_destination(&self, src: i32) -> i32 {
+    fn get_destination(&self, src: u32) -> u32 {
         let mut destination = src;
         let mut left_index: usize = 0;
         let mut right_index = self.source_range_start.len() - 1;
         let source_range;
-        let mut i = (right_index - left_index) / 2;
+        let mut i = (right_index + left_index) / 2;
         loop {
             if i == self.source_range_start.len() - 1 {
                 source_range = self.source_range_start[i];
@@ -45,7 +44,7 @@ impl RangedMaps {
                 left_index = i+1;
             }
 
-            i = (right_index - left_index) / 2;
+            i = (right_index + left_index) / 2;
         }
 
         let destination_range = 
@@ -76,7 +75,7 @@ fn main() {
         input_segments.next().unwrap()
         .split(": ").last().unwrap()
         .split(" ")
-        .map(|num| num.parse::<i32>().unwrap());
+        .map(|num| num.parse::<u32>().unwrap());
 
     let mut maps: Vec<RangedMaps> = vec![];
     for segment in input_segments {
@@ -94,19 +93,18 @@ fn main() {
             let params = 
                 range_map
                 .split(" ")
-                .map(|num| num.parse::<i32>().unwrap())
-                .collect::<Vec<i32>>();
+                .map(|num| num.parse::<u32>().unwrap())
+                .collect::<Vec<u32>>();
             map.register_range_map(params[0], params[1], params[2]);
         }
 
         maps.push(map);
     }
 
-    let mut min = i32::MAX;
-    for seed in seeds {
+    let mut min = u32::MAX;
+    for seed in seeds.clone() {
         let mut temp = seed;
         for map in maps.iter() {
-            println!("{} {}", map.name, temp);
             temp = map.get_destination(temp);
         }
         if temp < min {
@@ -115,4 +113,24 @@ fn main() {
     }
 
     println!("{}", min);
+
+    // Part 2
+    // let seeds_2: Vec<u32> = seeds.collect();
+    // let mut seeds_range: Vec<u32> = (seeds_2[0]..seeds_2[0]+seeds_2[1]).collect::<Vec<u32>>();
+    // seeds_range.append(&mut (seeds_2[2]..seeds_2[2]+seeds_2[3]).collect::<Vec<u32>>());
+
+    // println!("{}", seeds_range.len());
+    // let mut min = u32::MAX;
+    // for seed in seeds_range {
+    //     let mut temp = seed;
+    //     for map in maps.iter() {
+    //         temp = map.get_destination(temp);
+    //     }
+    //     if temp < min {
+    //         min = temp;
+    //     }
+    // }
+
+    // println!("{}", min);
+
 }
